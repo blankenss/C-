@@ -1,0 +1,158 @@
+#include <iostream>
+using namespace std;//可以省略std
+#pragma warning(disable:4996)  //忽略掉这4996这个错误信息
+
+int a = 10;
+void test1();
+void test2();
+void test3();
+void test4();
+void fun301();
+
+
+int main() {
+	//1.
+	std::cout << a<< std::endl;
+	cout << "Hello,World!"<<endl;
+	std::cout << "123456" << endl;
+	std:: cout<< "abcdef" << endl;
+	std::cout << "a=" << a << endl;
+	//2.::解决变量归属问题
+	int a = 20;
+	//a=20,就近输出
+	std::cout << "a=" << a <<std::endl;
+	//a=10，::取全局变量
+	std::cout << "a=" << ::a << std::endl;
+
+
+	//3.C++的输入与输出
+		//cout:标准输出  ->printf
+		//cin:标准输入  ->scanf
+		//cerr:标准错误输出  ->perror
+		//这些接口在使用的时候，需要在前面添加 std::,
+		//std::cout , std::cin, std::endl,std::cerr
+
+	//test1();
+	//test2();
+	test3();
+
+	fun301();
+	return 0;
+}
+//4.输入输出案例
+void test1()
+	{
+		int a = 0;
+		//输出
+		std::cout << "请输入一个整数:" << std::endl;
+		//输入
+		std::cin >> a;
+		//输出
+		std::cout << "您输入的整数是:" << a << std::endl;
+	}
+//c++的输出std::cout，不需要使用%d等格式化符号,不区分数据类型
+//c++的输入std::cin，不需要使用&取地址符号,
+void test2()
+{
+	int a = 0;
+	float b = 0.0f;
+	char c = 0;
+	//输入
+	std::cout << "请输入一个整数,一个小数,一个字符:" << std::endl;
+	//输入多个数据
+	std::cin >> a >> b >> c;
+	//输出
+	std::cout << "您输入的整数是:" << a << std::endl;
+	std::cout << "您输入的小数是:" << b << std::endl;
+	std::cout << "您输入的字符是:" << c << std::endl;
+}
+
+
+//5.c++的命名空间（namespace）
+	//命名空间的作用：解决命名冲突问题
+	//命名空间的使用：使用namespace关键字来定义命名空间
+int b = 20; //全局变量
+
+namespace NS1 {
+	int b = 30; //NS1命名空间下的变量
+		}
+	void test3()
+	{
+		
+		//1. 通过作用域运算符::来访问命名空间中的成员
+		int b = 10;
+		//输出局部变量b=10
+		std::cout << "b=" <<b << std::endl;
+		//输出全局变量b=30
+		std::cout << "NS1::b=" << NS1::b << std::endl;
+
+		// 2. 通过using 将命名空间暴露出去，使用命名空间中的成员时，就可以不加B::
+		//using NS1::b;暴露了NS1命名空间下的b变量，如果不注释掉，下面的输出会报错，原因是b变量冲突
+
+		std::cout << "b=" << b << std::endl;
+		//使用c++的输入输出时，可以使用using 将命名空间std暴露出来，
+		// 到时候使用输入输出时就可以不写std，直接写函数名就可以了
+	}
+
+
+
+
+	//6.匿名空间
+	namespace {
+				int c = 40; //匿名空间下的变量
+			}
+	void test4()
+	{
+		//匿名空间，没有名字的命名空间，
+		//匿名空间中的成员只能在本文件中使用，不能在其他文件中使用
+		//二义空间的作用：解决命名冲突问题，限定成员的使用范围
+		int c = 50;
+		cout << "c=" << c << endl; //输出局部变量c=50,就近原则
+		cout << "匿名空间c=" << ::c << endl; //输出匿名空间变量c=40
+	}
+	//7.命名空间嵌套
+	namespace A
+	{
+		int a = 10;
+		int b = 20;
+		int c = 30;
+		namespace B
+		{
+			int a = 10;
+			int b = 20;
+			int c = 30;
+		}
+	}
+
+	//8.命名空间注意事项
+		//1.命名空间可以嵌套定义
+		//2.命名空间可以分开定义
+		//3.命名空间可以使用using暴露成员
+		//4.匿名空间的成员只能在本文件中使用
+		//5.命名空间的作用是解决命名冲突问题
+		//6.命名空间的使用可以简化代码书写，提高代码可读性
+		//7.命名空间只能全局定义，不能在函数体内定义
+
+
+		//9.命名空间是开放的，可以随时把新的成员添加到命名空间中
+		
+	namespace D
+	{
+		int d = 10;
+	}
+	// 在命名空间定义出来以后，可以随时动态向命名空间中添加其他成员
+	namespace A
+	{
+		void fun1()
+		{
+			cout << "这是新添加的函数" << endl;
+		}
+	}
+	void fun301()
+	{
+		cout << "a=" << A::a << endl;
+		A::fun1();
+	}
+
+	//10.命名空间的别名
+	namespace AA = A;//给命名空间A起一个别名AA
