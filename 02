@@ -1,0 +1,331 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+//1.引用的基本使用
+void fun1()
+{
+	int a = 10;
+	cout << "a=" << a << endl;//10
+	int& b = a;//给a起了一个别名b
+	b = 20;//通过b修改a的值
+	cout << "a=" << a << endl;//20
+
+	cout << "&a=" << &a << endl;//a的地址
+	cout << "&b=" << &b << endl;//b的地址
+	//a和b的地址是一样的，因为b是a的别名
+
+}
+
+//2.引用的注意事项
+	//(1)引用必须初始化
+	//(2)引用一旦初始化后，就不能再改变了
+void fun2() {
+	int a = 10;
+	//int& b; //错误，引用必须初始化
+	int& b = a; //正确，引用必须初始化
+	cout << "a=" << a << endl;//10
+	cout << "b=" << b << endl;//10
+	int c = 20;
+	//b = c; //不是让b重新指向c，而是把c的值赋给了a
+	b = c; //相当于 a = c;
+	cout << "a=" << a << endl;//20
+	cout << "b=" << b << endl;//20
+	//int& d = 10; //错误，引用不能绑定到一个临时变量上
+	const int& d = 10; //正确，常量引用可以绑定到一个临时变量上
+	cout << "d=" << d << endl;//10
+}
+
+//3.给数组取别名
+void fun3() {
+	int arr[10] = { 0,1,2,3,4,5,6,7,8,9 };
+	int(&myarr)[10] = arr;//给数组取别名
+
+	for (int i = 0; i < 10; i++)
+	{
+		cout << myarr[i] << "\t";
+	}
+	cout << endl;
+}
+
+//4.给指针取别名
+void fun4() {
+	int* p1 = new int(10);
+
+	int*(&p2) = p1; //给指针取别名
+
+	cout << "*p1=" << *p1 << endl;
+	cout << "*p2=" << *p2 << endl;
+	cout << "p1的地址：" << p1 << endl;
+	cout << "p2的地址：" << p2 << endl;
+
+	delete p1;
+}
+//5.给函数取别名
+
+void test1()
+{
+	cout << "这是一个无参的函数" << endl;
+}
+void test2(int a)
+{
+	cout << "这是一个有参的函数,a=" << a << endl;
+}
+int test3(int a)
+{
+	cout << "这是一个有参有返回值的函数a=" << a << endl;
+	return a;
+}
+void fun5()
+{
+	void(&t1)() = test1;//给函数取别名
+	t1();//调用函数
+
+	void(&t2)(int a) = test2;//给函数取别名
+	t2(10);//调用函数
+
+	int(&t3)(int a) = test3;//给函数取别名
+
+	int res1 = t3(20);
+	int res2 = test3(200);
+	cout << "res1=" << res1 <<"\n" << "res2=" << res2 << endl;
+
+}
+//二、函数中的引用
+	//
+void swap1(int a, int b)//值传递
+{
+	int temp = a;
+	a = b;
+	b = temp;
+}
+
+void swap2(int* p1, int* p2)//地址传递
+{
+	int temp = *p1;
+	*p1 = *p2;
+	*p2 = temp;
+}
+
+void swap3(int& a, int& b)//引用传递
+{
+	int temp = a;
+	a = b;
+	b = temp;
+}
+
+//6.引用作为函数的参数
+void fun6() {
+	int a = 10;
+	int b = 20;
+	cout << "a=" << a << "b=" << b << "\n" << endl;
+	swap1(a,b);
+	cout << "a=" << a << "b=" << b << "\n" << endl;
+	swap2(&a, &b);
+	cout << "a=" << a << "b=" << b << "\n" << endl;
+	swap3(a, b);
+	cout << "a=" << a << "b=" << b << "\n" << endl;
+	
+}
+
+//7.引用作为函数返回值
+	//不能返回局部变量的引用
+int& add(int a,int b)
+{
+	int sum = a+b;
+	cout << "sum=" << sum << "\n" << endl;
+	cout << "&sum=" << &sum << "\n" << endl;
+	return sum;
+}
+
+void fun7()
+{
+	int a = 1;
+	int b = 2;
+	int& num = add(a, b);//表示函数返回一个 int 的引用，但必须确保引用指向的对象在函数返回后仍然有效。
+	cout << "num=" << num << "\n" << endl;
+	cout << "&num=" << &num << "\n" << endl;
+}
+
+//8.结构体内定义的函数
+struct Stu
+{
+	int age;
+	Stu& addAge(Stu& stu, int num) {
+		stu.age = stu.age + num;
+		cout << "age=" << age << endl;
+		cout << "&age=" << &age << "\n"<<endl;
+		return stu;
+	}
+};
+
+void fun8()
+{
+	Stu stu;
+	stu.age = 10;
+	stu.addAge(stu,10).addAge(stu, 20).addAge(stu, 30);
+}
+
+//9.常量引用——常引用
+	//常引用：给常量取别名
+void fun9()
+{
+	//常量引用注意：字面量不能赋给引用，但是可以赋给const修饰的引用，不能修改
+	//int& a=10; 错误的
+	const int& a = 10;
+	cout << "fun9 a=" << a << "\n" << endl;
+}
+
+//10.右值引用
+// int a=10;
+	//左值引用 int& b=a;
+	//右值引用 int&& b=10;  b=20;可以修改
+void fun10()
+{
+	int&& ref = 42;//右值引用
+	ref = 50;//可以修改值
+	std::string s1 = "hello world";
+	std::string s2 = std::move(s1);  // std::move将左值转为右值引用
+	//移动语义：将 s1 的资源"转移"给 s2
+				//s1 进入有效但未定义状态：
+				// 可能为空字符串 ""
+				//可能保持原内容（理论上不允许依赖）
+				//绝对不能再假设 s1 包含 "hello world"
+	cout << "ref=" << ref << "\n" << endl;
+	//cout << "s1=" <<  s1 << "\n" << endl; 打印为空
+	cout << "s2=" << s2 << "\n" << endl;
+}
+
+//11.Struct加强
+//C++中定义结构体变量可以不加struct关键字
+struct Student
+{
+	int id;
+	string name;
+	int age;
+	void printName(string name)
+	{
+		cout << "name=" << name << endl;
+	}
+};
+//定义结构体变量不需要加struct关键字
+void fun11()
+{
+	Student stu = {1,"zs",30};
+	cout << "id=" << stu.id << "name=" << stu.name << "age=" << stu.age << endl;
+	stu.printName(stu.name);
+}
+
+//12 bool类型关键字
+
+void fun12()
+{
+	bool flag = true;
+	cout << "bool的大小" << sizeof(true) << endl; //bool类型占1字节大小
+	if (flag) {
+		cout << "真true" << endl;
+	}
+	else {
+		cout << "假false" << endl;
+	}
+}
+
+//13 C++中的关键字const
+//在 c++中，一个 const 不必创建内存空间，而在 c 中，一个 const 总是需要一块内存空间
+
+
+void fun13() {
+	const int a = 10;
+	int* p = (int*)&a;
+	*p = 100;
+	cout << "p=" << *p << endl;//100
+	cout << "a=" << a << endl;//10
+	//在编译时，编译器直接将 a 替换为字面值 10
+	//所以 cout << "a=" << a << endl 实际上变成了 cout << "a=" << 10 << endl
+}
+
+//14  内联函数（inline function）
+	//内联函数就是在编译的时候，将函数的内容拷贝到调用处，就减少了入栈&出栈的时间
+//(1)内联函数
+inline int Add(int x, int y)
+{
+	return x + y;
+}
+//（2）宏定义
+#define ADD(x,y) x+y
+void fun14()
+{
+	int ret1 = Add(10, 20) * 10;//内联函数
+	int ret2 = ADD(10, 20) * 10;//宏定义，替换操作
+	cout << "ret1=" << ret1 << endl;
+	cout << "ret2=" << ret2 << endl;
+
+}
+
+//15 函数的默认参数——缺省参数
+//当函数调用的时候如果没有指定这个值，编译器会自动用默认值代替。
+// 注意：如果函数的某个参数设置了缺省值，那么这个参数右边的所有参数都必须设置缺省值
+int sub(int a = 20, int b = 10)//
+{
+	return a - b;
+}
+void fun15()
+{
+	int a = 40;
+	int b = 10;
+	int res1=sub();//没输入值就是默认值
+	int res2 = sub(a,b);
+	cout << "res1=" << res1 << endl;
+	cout << "res2=" << res2 << endl;
+
+}
+
+//16  函数重载
+//函数名可以相同，但是参数类型需不同
+
+void Add(double a, double b)
+{
+	cout << a + b <<"\t" << endl;
+}
+void Add(double a,int b)
+{
+	cout << a<<"\t" << endl;
+	cout << b << "\t" << endl;
+}
+void fun16()
+{
+	Add(7.5, 7.5);
+	Add(8.5, 8);
+}
+
+
+
+
+
+
+
+
+
+
+int main() {
+	cout << "Man,ManBo,I can what say!" << endl;
+	//1.
+	//fun1();
+	//fun2();
+	//fun3();
+	//fun4();
+	//fun5();
+	//fun6();
+	//fun7();
+	//fun8();
+	//fun9();
+	//fun10();
+	//fun11();
+	//fun12();
+	//fun13();
+	//fun14();
+	//fun15();
+	//fun16();
+	return 0;
+}
+
