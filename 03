@@ -1,0 +1,68 @@
+#include <iostream>
+using namespace std;
+
+//类
+class Student {
+private:
+	string stuno;
+	string name;
+	int age;
+public:
+	//1.
+	void setStuno(string setStuno)
+	{
+		stuno = setStuno;
+	}
+	string getStuno()
+	{
+		return stuno;
+	}
+	//2.
+	void setName(string setName)
+	{
+		name = setName;
+	}
+	string getName()
+	{
+		return name;
+	}
+	//3.
+	void setAge(int setAge)
+	{
+		if (setAge > 7 && setAge < 25)
+		{
+			age= setAge;
+		}
+	}
+	int getAge()
+	{
+		return age;
+	}
+	//4.
+	void Init(string segstuno="001", string setname = "张三", int setage = 0)
+	{
+		setStuno(segstuno);
+		setName(setname);
+		setAge(setage);
+	}
+};
+
+int main()
+{
+	Student s1 = Student();	
+	s1.Init();
+	cout << s1.getStuno() << endl;
+	cout << s1.getName() <<endl;
+	cout << s1.getAge() <<endl;
+	Student s2 = Student();
+	string stuno = "9527";
+	string name = "王五";
+	int age = 20;
+	s2.setStuno(stuno);
+	s2.setName(name);
+	s2.setAge(age);
+	cout << s2.getStuno() << endl;
+	cout << s2.getName() << endl;
+	cout << s2.getAge() << endl;
+	return 0;
+}
