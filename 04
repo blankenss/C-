@@ -1,0 +1,283 @@
+#include <iostream>
+#include "Demo.h"
+#pragma warning(disable:4996)
+using namespace std;
+
+//定义一个结构体用来表示一个对象所包含的属性，函数用来表示一个对象所具有的行为，
+// 这样我们就表示出来一个事物，在 c 语言中，行为和属性是分开的
+
+//封装：1.属性和变量合成一个整体  2.给属性和函数增加访问权限
+
+//1.定义一个类
+class A {
+private://私有的，不能被外界访问
+	int id;
+	int age;
+
+public://只有public才能在外部访问
+	void setId(int i)
+	{
+		id = i;
+	}
+	int getId()
+	{
+		return id;
+	}
+	void setAge(int a);
+	int getAge();
+};
+
+void test1()
+{
+	A user;
+	user.setId(18);
+	cout << user.getId() << endl;
+}
+//2.成员函数在类的外部实现
+//类名::函数名(){}
+void A::setAge(int a)
+{
+	age = a;
+}
+int A::getAge()
+{
+	return age;
+}
+void test2()
+{
+	A B;
+	B.setAge(28);
+	cout << B.getAge() << endl;
+}
+//3. 在不同文件中实现 类
+void test3()
+{
+	Demo demo;
+	demo.setA(10);
+	demo.setB(20);
+
+	cout << demo.getA() << "-" << demo.getB();
+}
+
+//4.构造函数
+class AA
+{
+private:
+	int a;
+public:
+	AA()
+	{
+		cout << "这是一个无参构造函数" << endl;
+	}
+	AA(int aa)
+	{
+		a = aa;
+		cout << "这是一个有参构造a= "<<aa << endl;
+	}
+};
+void test4()
+{
+	AA BB;//隐式调用无参构造函数
+	AA CC = AA();//显示调用 无参构造函数
+	AA DD = AA(10);//调用有参数构造函数
+	
+
+}
+
+//5.  拷贝构造函数
+void test5()
+{
+	AA A1(11);
+	AA A2 = A1;
+
+}
+//6.浅拷贝 --  改变一个值，另一个值也可能被改变
+class A6 {
+
+public:
+	char* name;
+	int age;
+public:
+	A6()
+	{
+		name = NULL;
+		cout << "无参构造" << endl;
+	}
+	A6(char* mname)
+	{
+		cout << "有参构造" << endl;
+		name = new char[strlen(mname) + 1];
+		strcpy(name,mname);
+	}
+	A6(int Age)
+	{
+		age = Age;
+	}
+	void setName(char* mname)
+	{
+		strcpy(name, mname);
+	}
+};
+
+void test6()
+{
+	A6 B6((char*)"hello wrold!");
+
+	A6 BB6 = B6;
+	cout << "qianB6" << B6.name << endl;
+	cout << "qianBB6" << BB6.name << endl;
+
+	BB6.setName((char*)"123");//前后两个值都被改变了
+
+	cout << "houB6" << B6.name << endl;
+	cout << "houBB6" << BB6.name << endl;
+}
+
+
+
+
+//作业
+//1.立方体
+class Cube
+{
+public:
+	int a;
+	int b;
+	int c;
+public:
+	Cube(int aa,int bb,int cc) {
+		a = aa;
+		b = bb;
+		c = cc;
+	}
+	int Area(int a, int b, int c)
+	{
+		return (2*a*b+2*a*c+2*b*c);
+	}
+	int Volume(int a, int b, int c)
+	{
+		return (a*b*c);
+	}
+		
+};
+void compare(Cube c1, Cube c2)
+{
+	if ((c1.Area(c1.a,c1.b,c1.c) == c2.Area(c2.a,c2.b,c2.c)) &&
+		(c1.Volume(c1.a, c1.b, c1.c) == c2.Volume(c2.a, c2.b, c2.c)))
+	{
+		cout << "两个立方体相等" << endl;
+	}
+	else {
+		cout << "两个立方体不相等" << endl;
+	}
+}
+void testend1()
+{
+	Cube c1(2,3,3);
+	Cube c2(3, 3, 2);
+	compare(c1,c2);
+}
+//作业2
+class AdvCircle
+{
+public:
+	int x0;
+	int y0;
+	int r;
+
+public:
+	AdvCircle(int x,int y,int r1) {
+		x0 = x;
+		y0 = y;
+		r = r1;
+	}
+
+	
+};
+class Point {
+public:
+	int x1;
+	int y1;
+public:
+	Point(int x, int y)
+	{
+		x1 = x;
+		y1 = y;
+	}
+
+};
+
+void testend2()
+{
+	AdvCircle A1(0,0,2);
+	Point P1(1,1);
+	if (((P1.x1 - A1.x0) * (P1.x1 - A1.x0) + (P1.y1 - A1.y0) * (P1.y1 - A1.y0)) == A1.r * A1.r)
+	{
+		cout << "点在圆上" << endl;
+	}
+	else if (((P1.x1 - A1.x0) * (P1.x1 - A1.x0) + (P1.y1 - A1.y0) * (P1.y1 - A1.y0)) < A1.r * A1.r)
+	{
+		cout << "点在圆内" << endl;
+	}
+	else if (((P1.x1 - A1.x0) * (P1.x1 - A1.x0) + (P1.y1 - A1.y0) * (P1.y1 - A1.y0)) > A1.r * A1.r)
+	{
+		cout << "点在圆外" << endl;
+	}
+}
+
+
+
+int main()
+{
+	//test1();
+	//test2();
+	//test3();
+	//test4();
+	//test5();
+	//test6();
+
+
+	//testend1();
+	//testend2();
+	return 0;
+}
+//Demo.c
+#include "Demo.h"
+
+void Demo::setA(int ma)
+{
+	a = ma;
+}
+
+int Demo::getA()
+{
+	return a;
+}
+
+void Demo::setB(int mb)
+{
+	b = mb;
+}
+
+int Demo::getB()
+{
+	return b;
+}
+
+
+//Demo.h
+#pragma once
+#include <iostream>
+class Demo
+{
+private:
+	int a;
+protected:
+	int b;
+public:
+	void setA(int a);
+	int getA();
+	void setB(int b);
+	int getB();
+};
+
